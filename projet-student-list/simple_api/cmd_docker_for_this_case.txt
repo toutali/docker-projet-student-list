@@ -1,0 +1,9 @@
+# Build image docker for this 
+docker build -t simple_api:v1 .
+
+# run docker image with bind mount
+docker run -dit --name "api" -p 8080:5000 -v ${PWD}/student_age.json:/data/student_age.json api:v1.0
+
+# TEST API
+# curl -u toto:python -X GET http://<host IP>:<API exposed port>/pozos/api/v1.0/get_student_ages
+curl -u toto:python -X GET http://<host IP>:8080/pozos/api/v1.0/get_student_ages 
