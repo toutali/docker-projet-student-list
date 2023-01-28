@@ -1,0 +1,49 @@
+version: '3.1'
+services:
+  webapi:
+    image: php:apache 
+    depends_on:
+      - apicompose
+    ports:
+      - "80:80"
+    environment:
+    - USERNAME=toto
+    - PASSWORD=python
+    volumes:
+      - ./website:/var/www/html
+    networks:
+      - tt-network
+  
+  apicompose:
+    image: api:v1.0
+    volumes:
+      - ./simple_api/student_age.json:/data/student_age.json
+    ports:
+      - "8088:5000"
+    container_name: apicompose
+    networks:
+     - tt-network
+
+  api-registry:
+    image: registry:2
+    ports:
+      - "5000:5000"
+    container_name: api-registry
+    networks:
+      - tt-network
+
+  web-registry:
+    depends_on:
+      - api-registry
+    image: joxit/docker-registry-ui
+    ports:
+      - "8000:80"
+    container_name: web-registry
+    environment:
+      - REGISTRY_TITLE="REGISTRY BY TTOURE"
+      - REGISTRY_URL="http://127.0.0.1:5000"
+    networks:
+      - tt-network
+
+networks:
+  tt-network:
